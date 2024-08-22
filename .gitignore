@@ -1,0 +1,56 @@
+# Ignorar o arquivo de variáveis de ambiente
+.env
+
+# Logs
+.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Ignorar a pasta de dependências do Node.js
+node_modules/
+
+# Ignorar arquivos de build e compilação
+dist/
+dist-ssr/
+build/
+
+# Ignorar arquivos temporários locais
+*.local
+*.lock
+*.cache
+*.tmp
+*.temp
+
+# Ignorar dados do sistema operacional
+.DS_Store
+Thumbs.db
+
+# Ignorar configurações de editores e IDEs
+.vscode/
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.iml
+
+# Ignorar pacotes e dependências de bibliotecas
+package-lock.json
+yarn.lock
+.pnpmfile.cjs
+
+# Ignorar arquivos de teste e de debug
+coverage/
+*.test.*
+*.spec.*
+
+# Ignorar arquivos do MongoDB Memory Server (caso precise)
+node_modules/.cache/mongodb-memory-server/
+
+# Ignorar diretórios de saída de compiladores (como TypeScript)
+out/
