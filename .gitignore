@@ -54,3 +54,4 @@ node_modules/.cache/mongodb-memory-server/
 
 # Ignorar diretórios de saída de compiladores (como TypeScript)
 out/
+.vercel
