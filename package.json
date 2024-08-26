@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "keywords": [],
+  "type": "module",
+  "engines": {
+    "node": "18.17.0"
+  },
   "author": "",
   "license": "ISC",
   "description": "",
