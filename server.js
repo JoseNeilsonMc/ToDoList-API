@@ -50,7 +50,7 @@ app.use('/auth', authRoutes);
 
 // Rota principal para verificar se a API está em execução
 app.get('/', (req, res) => {
-  res.send('API is running');
+  return res.json('API is running');
 });
 
 // Define a porta para o servidor
