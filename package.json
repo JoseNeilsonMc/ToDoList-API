@@ -10,6 +10,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@prisma/client": "^5.20.0",
     "bcryptjs": "^2.4.3",
     "cookie-session": "^2.1.0",
     "cors": "^2.8.5",
@@ -19,5 +20,11 @@
     "mongoose": "^8.5.1",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0"
+  },
+    "scripts": {
+      "start": "nodemon src/server.js"
+  },  
+  "devDependencies": {
+    "prisma": "^5.20.0"
   }
 }

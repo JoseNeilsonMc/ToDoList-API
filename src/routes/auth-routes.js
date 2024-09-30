@@ -1,17 +1,10 @@
-// Importa o módulo express para criar o roteador
 const express = require('express');
-
-// Importa o módulo passport para autenticação
 const passport = require('passport');
-
-// Importa o módulo bcryptjs para manipulação de senhas (não usado diretamente aqui)
 const bcrypt = require('bcryptjs');
+const User = require('../models/User');
 
 // Cria uma instância do roteador express
 const router = express.Router();
-
-// Importa o modelo User para interagir com o banco de dados
-const User = require('../models/User');
 
 // Rota para iniciar o login com Google
 router.get('/google', passport.authenticate('google', {
@@ -20,9 +13,9 @@ router.get('/google', passport.authenticate('google', {
 
 // Callback após autenticação com Google
 router.get('/google/callback', 
-  passport.authenticate('google', { failureRedirect: '/' }), // Redireciona para a página inicial se falhar
+  passport.authenticate('google', { failureRedirect: '/' }), 
   (req, res) => {
-    // Redireciona para a URL dos todos após autenticação bem-sucedida
+    // Redireciona para a página de todos após login bem-sucedido
     res.redirect('http://localhost:5173/todos');
   }
 );
@@ -39,8 +32,8 @@ router.post('/login', async (req, res) => {
   try {
     // Procura o usuário pelo email
     const user = await User.findOne({ email });
-    
-    // Verifica se o usuário existe e se a senha está correta
+
+    // Verifica se o usuário existe e a senha está correta
     if (!user || !(await user.comparePassword(password))) {
       return res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
@@ -50,11 +43,9 @@ router.post('/login', async (req, res) => {
       if (err) {
         return res.status(500).json({ success: false, message: 'Error logging in' });
       }
-      // Retorna sucesso e dados do usuário
       res.json({ success: true, message: 'Logged in successfully', user });
     });
   } catch (err) {
-    // Retorna erro do servidor se ocorrer um problema
     res.status(500).json({ success: false, message: 'Server error' });
   }
 });
@@ -83,31 +74,29 @@ router.post('/register', async (req, res) => {
       if (err) {
         return res.status(500).json({ success: false, message: 'Error logging in' });
       }
-      // Retorna sucesso e dados do novo usuário
       res.json({ success: true, message: 'User registered and logged in successfully', user: newUser });
     });
   } catch (err) {
-    // Retorna erro do servidor se ocorrer um problema
     res.status(500).json({ success: false, message: 'Server error' });
   }
 });
 
 // Rota para logout
 router.get('/logout', (req, res, next) => {
-  // Encerra a sessão do usuário
   req.logout((err) => {
     if (err) { return next(err); }
-    // Limpa o cookie de sessão
-    res.clearCookie('connect.sid');
-    // Retorna sucesso na operação de logout
+    res.clearCookie('connect.sid', { path: '/' });
     res.status(200).send({ message: 'Logged out' });
   });
 });
 
-// Rota para obter o usuário autenticado
+// Rota para obter o usuário autenticado (rota protegida)
 router.get('/current_user', (req, res) => {
-  // Retorna os dados do usuário autenticado
-  res.json(req.user);
+  // Verifica se o usuário está autenticado
+  if (req.isAuthenticated()) {
+    return res.json(req.user);
+  }
+  res.status(401).json({ message: 'No user authenticated' });
 });
 
 // Exporta o roteador para ser usado em outros arquivos

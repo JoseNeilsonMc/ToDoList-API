@@ -1,12 +1,17 @@
 // Middleware para verificar se o usuário está autenticado
 module.exports = (req, res, next) => {
-  
-  // Verifica se a requisição tem um usuário autenticado
+  // Verifica se o usuário está autenticado via Passport
   if (req.isAuthenticated()) {
-    // Se o usuário estiver autenticado, chama o próximo middleware ou rota
+    // Se autenticado, prossiga para a próxima função/middleware
     return next();
   }
 
-  // Se o usuário não estiver autenticado, retorna um status 401 (não autorizado) com uma mensagem de erro
-  res.status(401).send({ error: 'Unauthorized' });
+  // Se não autenticado, registre a tentativa de acesso não autorizado
+  console.error(`[ERROR] Acesso não autorizado em: ${req.originalUrl}`);
+
+  // Envia uma resposta padronizada com o status 401 e uma mensagem de erro
+  res.status(401).json({
+    success: false,
+    message: 'Acesso não autorizado. Por favor, faça login para continuar.',
+  });
 };

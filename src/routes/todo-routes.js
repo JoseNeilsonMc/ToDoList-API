@@ -4,8 +4,8 @@ const express = require("express");
 // Importa o middleware para garantir que o usuário está autenticado
 const ensureAuthenticated = require("../middleware/ensureAuthenticated");
 
-// Importa o modelo Todo para interagir com o banco de dados
-const Todo = require("../models/Todo");
+// Importa o Prisma Client para interagir com o banco de dados
+const prisma = require("../../prisma/prismaClient");
 
 // Cria uma instância do roteador express
 const router = express.Router();
@@ -14,7 +14,9 @@ const router = express.Router();
 router.get("/todos", ensureAuthenticated, async (req, res) => {
   try {
     // Encontra todas as tarefas associadas ao usuário autenticado
-    const todos = await Todo.find({ userId: req.user._id });
+    const todos = await prisma.todo.findMany({
+      where: { userId: req.user._id },
+    });
     // Retorna as tarefas encontradas
     res.send(todos);
   } catch (error) {
@@ -28,13 +30,13 @@ router.post("/todos", ensureAuthenticated, async (req, res) => {
   try {
     const { text, category } = req.body;
     // Cria uma nova tarefa com os dados fornecidos e o ID do usuário autenticado
-    const todo = new Todo({
-      text,
-      category,
-      userId: req.user._id,
+    const todo = await prisma.todo.create({
+      data: {
+        text,
+        category,
+        userId: req.user._id,
+      },
     });
-    // Salva a nova tarefa no banco de dados
-    await todo.save();
     // Retorna a tarefa criada com o status 201 (Criado)
     res.status(201).json(todo);
   } catch (error) {
@@ -48,12 +50,11 @@ router.put("/todos/:id", ensureAuthenticated, async (req, res) => {
   try {
     const { isCompleted } = req.body;
     // Encontra e atualiza a tarefa com o ID fornecido e associada ao usuário autenticado
-    const todo = await Todo.findOneAndUpdate(
-      { _id: req.params.id, userId: req.user._id },
-      { isCompleted },
-      { new: true }
-    );
-    if (!todo) {
+    const todo = await prisma.todo.updateMany({
+      where: { id: req.params.id, userId: req.user._id },
+      data: { isCompleted },
+    });
+    if (!todo.count) {
       // Retorna um erro se a tarefa não for encontrada
       return res.status(404).send({ error: "Todo not found" });
     }
@@ -69,11 +70,10 @@ router.put("/todos/:id", ensureAuthenticated, async (req, res) => {
 router.delete("/todos/:id", ensureAuthenticated, async (req, res) => {
   try {
     // Encontra e remove a tarefa com o ID fornecido e associada ao usuário autenticado
-    const todo = await Todo.findOneAndDelete({
-      _id: req.params.id,
-      userId: req.user._id,
+    const todo = await prisma.todo.deleteMany({
+      where: { id: req.params.id, userId: req.user._id },
     });
-    if (!todo) {
+    if (!todo.count) {
       // Retorna um erro se a tarefa não for encontrada
       return res.status(404).send({ error: "Todo not found" });
     }

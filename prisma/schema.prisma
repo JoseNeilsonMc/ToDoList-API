@@ -1,0 +1,16 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("MONGODB_URI") // A URL do MongoDB será configurada no .env
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Todo {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  text      String
+  category  String
+  isCompleted Boolean @default(false)
+  userId    String
+}
