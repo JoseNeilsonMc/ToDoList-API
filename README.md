@@ -32,7 +32,7 @@ Esta API, desenvolvida com Node.js, Express e Mongoose, permite autenticação d
 
 3. Crie um arquivo `.env` na raiz com:
     ```env
-    MONGO_URI=your_mongodb_connection_string
+    MONGODB_URI=your_mongodb_connection_string
     SESSION_SECRET=your_session_secret
     GOOGLE_CLIENT_ID=your_google_client_id
     GOOGLE_CLIENT_SECRET=your_google_client_secret
